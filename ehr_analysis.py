@@ -7,19 +7,19 @@ DAYS_IN_YEAR = 365.25
 
 
 def parse_data2(filename: str) -> dict:
-    """Create a dict based on the txt file."""
+    """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
     text_file = open(filename, mode="r", encoding="utf-8-sig")
     line_by_line = text_file.readlines()
 
     col_names = line_by_line[0]
     col_names_list = col_names.strip().split("\t")
     dataframe: dict[str, list] = {}
-    for var in col_names_list:
+    for var in col_names_list:  # O(N)
         dataframe[var] = []
 
-    for i in range(1, len(line_by_line)):
+    for i in range(1, len(line_by_line)):  # O(N)
         line_data_list = line_by_line[i].strip().split("\t")
-        for j in range(len(col_names_list)):
+        for j in range(len(col_names_list)):  # O(N)
             dataframe[col_names_list[j]].append(line_data_list[j])
 
     text_file.close()
@@ -36,10 +36,10 @@ labs_core = parse_data2(
 
 
 def num_older_than(age: float, patient_core) -> int:
-    """Considers number of days old a person is."""
+    """Function has order N complexity since ."""
     days_old = age * DAYS_IN_YEAR
     count_older = 0
-    for values in patient_core["PatientDateOfBirth"]:
+    for values in patient_core["PatientDateOfBirth"]:  # O(N)
         year, month, day = values.split()[0].split("-")
         patient_age = date.today() - date(int(year), int(month), int(day))
         if patient_age.days > days_old:
@@ -50,22 +50,22 @@ def num_older_than(age: float, patient_core) -> int:
 def sick_patients(
     lab: str, gt_lt: str, value_compare: float, labs_core: dict
 ) -> list[str]:
-    """Return list of patient IDs after testing for."""
+    """Each if conditional statement has constant complexity and are not counted in overall. Function has O(N)."""
     sick_patient_list: list[str] = []
     check_lab_value: list = []
     Lab_Value_to_float = [float(i) for i in labs_core["LabValue"]]  # O(N)
     check_lab_value.append(Lab_Value_to_float)
 
     for i, lab_name in enumerate(labs_core["LabName"]):  # O(N)
-        if lab == lab_name:
+        if lab == lab_name:  # O(1)
             if gt_lt == ">":
-                if check_lab_value[0][i] > value_compare:
-                    patient_id = labs_core["PatientID"][i]
-                    sick_patient_list.append(patient_id)
-            elif gt_lt == "<":
-                if check_lab_value[0][i] < value_compare:
-                    patient_id = labs_core["PatientID"][i]
-                    sick_patient_list.append(patient_id)
+                if check_lab_value[0][i] > value_compare:  # O(2)
+                    patient_id = labs_core["PatientID"][i]  # O(2)
+                    sick_patient_list.append(patient_id)  # O(1)
+            elif gt_lt == "<":  # O(1)
+                if check_lab_value[0][i] < value_compare:  # O(2)
+                    patient_id = labs_core["PatientID"][i]  # O(2)
+                    sick_patient_list.append(patient_id)  # O(1)
             else:
                 raise ValueError(f"Invalid label {lab}")
     return sick_patient_list
