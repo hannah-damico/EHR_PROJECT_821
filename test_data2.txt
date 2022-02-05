@@ -1,0 +1,3 @@
+PatientID	PatientGender	PatientDateOfBirth	PatientRace	PatientMaritalStatus	PatientLanguage	PatientPopulationPercentageBelowPoverty
+HAIUFABG-4543	Female	1964-07-11	White	Divorced	English	12.8
+BOAET-64EG	Male	1997-10-25	Asian	Married	Japanese	9.2
