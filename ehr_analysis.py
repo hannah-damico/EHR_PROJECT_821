@@ -22,7 +22,7 @@ def parse_data(filename: str) -> dict[str, list[str]]:
 
     for i in range(1, len(line_by_line)):  # O(N)
         line_data_list = line_by_line[i].strip().split("\t")
-        for j in range(1, len(col_names_list)):  # O(N)
+        for j in range(len(col_names_list)):  # O(N)
             dataframe[col_names_list[j]].append(line_data_list[j])
 
     text_file.close()
