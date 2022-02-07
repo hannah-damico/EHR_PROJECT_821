@@ -29,6 +29,10 @@ def parse_data(filename: str) -> dict[str, list]:
     return dataframe
 
 
+patient_core = parse_data2("/Users/hannahdamico/EHR_PROJECT_821/test_data2.txt")
+labs_core = parse_data2("/Users/hannahdamico/EHR_PROJECT_821/test_table.txt")
+
+
 def num_older_than(age: float, patient_core: dict[str, list]) -> int:
     """Compute total number of patients older than input number."""
     days_old = age * DAYS_IN_YEAR
@@ -36,7 +40,7 @@ def num_older_than(age: float, patient_core: dict[str, list]) -> int:
     for values in patient_core["PatientDateOfBirth"]:  # O(N)
         year, month, day = values.split()[0].split("-")
         patient_age = date.today() - date(int(year), int(month), int(day))
-        if patient_age.days > days_old:
+        if patient_age.days > days_old:  # O(1)
             count_older += 1
     return count_older
 
@@ -65,3 +69,26 @@ def sick_patients(
     else:
         return sick_patient_list
     return sick_patient_list
+
+
+def first_admission_age(
+    patientID: str, patient_core: dict[str, list], labs_core: dict[str, list]
+):
+    """Return patient age at first admission."""
+    for i, values in enumerate(patient_core["PatientDateOfBirth"]):
+        if patientID == patient_core["PatientID"][i]:
+            year, month, day = values.split()[0].split("-")
+            dob = date(int(year), int(month), int(day))
+        for j in labs_core["LabDateTime"][i]:
+            test_date_list: list[date] = []
+            year_visit, month_visit, day_visit = (
+                labs_core["LabDateTime"][i].split()[0].split("-")
+            )
+            admission_dates = date(int(year_visit), int(month_visit), int(day_visit))
+            test_date_list.append(admission_dates)
+            first_admission = min(test_date_list)
+    diff = abs((first_admission - dob)) / DAYS_IN_YEAR
+    first_admission_age = diff.days
+    return (
+        f"Patient {patientID} was {first_admission_age} years old at first admission."
+    )

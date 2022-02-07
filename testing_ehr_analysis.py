@@ -1,5 +1,5 @@
 """Testing EHR Analysis."""
-
+import pytest
 from ehr_analysis import parse_data2, num_older_than, sick_patients
 
 
@@ -32,6 +32,11 @@ def testing_sick_patients():
 
     assert sick_patients("METABOLIC: GLUCOSE", ">", 1.0, test) == check_label
     assert sick_patients("CBC: PLATELET COUNT", "<", 200, test) == set()
+    with pytest.raises(ValueError):
+        sick_patients("CBC: PLATELET COUNT", "=", 4.5, test)
 
-    # with pytest.raises(ValueError):
-    #  sick_patients("CBC: PLATELET COUNT", "=", 4.5, test)
+
+def testing_first_admission_age():
+    """Check first_admission_age function coverage."""
+    # test =
+    return
