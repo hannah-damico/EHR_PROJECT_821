@@ -31,7 +31,7 @@
 ## Contributor Information
    ### Testing Instructions
    Users should begin by opening python file *testing_ehr_analysis.py* and replacing pathways in each function corresponding to the correct text files per testing function as described below:
-   1. *testing_parse_data()*:
+   1. *testing_parse_data( )*:
       * Variable *simple_test_data* should be replaced with user pathway corresponding to the textfile *simple_test_data.txt*
 
       ```python
@@ -40,7 +40,7 @@
       simple_test_data = "User/Pathway/Here"
       ```
 
-   2. *testing_num_older_than()*:
+   2. *testing_num_older_than( )*:
       * Variable *patient_core_test_data* should be replaced with user pathway corresponding to the textfile *patient_core_test_data.txt*
       ```python
       def testing_num_older_than():
