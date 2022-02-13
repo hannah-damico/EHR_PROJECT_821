@@ -2,11 +2,15 @@
 
 import datetime
 from datetime import date
+import logging
+
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
 
 DAYS_IN_YEAR = 365.25
 
 
-def parse_data(filename: str) -> dict:
+def parse_data(filename: str) -> dict[str, list]:
     """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
     with open(filename, mode="r", encoding="utf-8-sig") as text_file:
         line_by_line = text_file.readlines()
@@ -55,9 +59,10 @@ def sick_patients(
                     patient_id = labs_core["PatientID"][i]  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             else:
-                raise ValueError(f"Unexpected label: {lab}")
+                raise ValueError(f"Unexpected inequality symbol: {gt_lt}")
+
     if len(sick_patient_list) == 0:
-        print("No patients found under these conditions.")
+        logging.info(" No patients found under these conditions.")
     else:
         return sick_patient_list
     return sick_patient_list
