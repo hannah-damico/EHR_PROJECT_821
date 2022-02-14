@@ -9,7 +9,7 @@ logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 DAYS_IN_YEAR = 365.25
 
 
-def parse_data(filename: str) -> dict[str, list]:
+def parse_data(filename: str) -> dict[str, list[str]]:
     """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
     with open(filename, mode="r", encoding="utf-8-sig") as text_file:
         line_by_line = text_file.readlines()
@@ -29,7 +29,7 @@ def parse_data(filename: str) -> dict[str, list]:
     return dataframe
 
 
-def num_older_than(age: float, patient_core: dict[str, list]) -> int:
+def num_older_than(age: float, patient_core: dict[str, list[str]]) -> int:
     """Compute total number of patients older than input number."""
     days_old = age * DAYS_IN_YEAR
     count_older = 0
@@ -42,7 +42,7 @@ def num_older_than(age: float, patient_core: dict[str, list]) -> int:
 
 
 def sick_patients(
-    lab: str, gt_lt: str, value_compare: float, labs_core: dict[str, list]
+    lab: str, gt_lt: str, value_compare: float, labs_core: dict[str, list[str]]
 ) -> set[str]:
     """Each if conditional statement has constant complexity and are not counted in overall. Function has O(N)."""
     sick_patient_list: set[str] = set()
@@ -68,7 +68,7 @@ def sick_patients(
 
 
 def first_admission_age(
-    patientID: str, patient_core: dict[str, list], labs_core: dict[str, list]
+    patientID: str, patient_core: dict[str, list], labs_core: dict[str, list[str]]
 ):
     """Return patient age at first admission."""
     for i, values in enumerate(patient_core["PatientDateOfBirth"]):
