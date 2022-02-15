@@ -68,7 +68,7 @@ def sick_patients(
 
 
 def first_admission_age(
-    patientID: str, patient_core: dict[str, list], labs_core: dict[str, list[str]]
+    patientID: str, patient_core: dict[str, list[str]], labs_core: dict[str, list[str]]
 ):
     """Return patient age at first admission."""
     for i, values in enumerate(patient_core["PatientDateOfBirth"]):
