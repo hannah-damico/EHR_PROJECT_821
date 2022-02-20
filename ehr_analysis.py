@@ -79,7 +79,7 @@ def first_admission_age(
         if patientID == patient_core["PatientID"][i]:
             year, month, day = values.split()[0].split("-")
             dob = date(int(year), int(month), int(day))
-        for j in labs_core["LabDateTime"][i]:
+        for j in labs_core["LabDateTime"]:
             test_date_list: list[date] = []
             year_visit, month_visit, day_visit = (
                 labs_core["LabDateTime"][i].split()[0].split("-")
