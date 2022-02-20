@@ -5,7 +5,7 @@ from ehr_analysis import parse_data, num_older_than, sick_patients, first_admiss
 
 def testing_parse_data():
     """Check parse_data2 function coverage."""
-    simple_test_data = "/Users/hannahdamico/EHR_PROJECT_821/test_data1.txt"
+    simple_test_data = "/Users/hannahdamico/EHR_PROJECT_821/simple_test_data.txt"
 
     check_simple_test_data = {
         "key1": ["item11", "item21"],
@@ -20,7 +20,7 @@ def testing_parse_data():
 def testing_num_older_than():
     """Check num_older_than function coverage."""
     patient_core_test_data = parse_data(
-        "/Users/hannahdamico/EHR_PROJECT_821/test_data2.txt"
+        "/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt"
     )
 
     assert num_older_than(-99, patient_core_test_data) == 2
@@ -31,7 +31,7 @@ def testing_num_older_than():
 def testing_sick_patients():
     """Check sick_patients function coverage."""
     labs_core_test_data = parse_data(
-        "/Users/hannahdamico/EHR_PROJECT_821/test_table.txt"
+        "/Users/hannahdamico/EHR_PROJECT_821/labs_core_test_data.txt"
     )
     check_label = set(["HAIUFABG-4543"])
     check_operation = set(["BOAET-64EG"])
@@ -52,10 +52,10 @@ def testing_sick_patients():
 def testing_first_admission_age():
     """Check first_admission_age function coverage."""
     patient_core_test_data = parse_data(
-        "/Users/hannahdamico/EHR_PROJECT_821/test_data2.txt"
+        "/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt"
     )
     labs_core_test_data = parse_data(
-        "/Users/hannahdamico/EHR_PROJECT_821/test_table.txt"
+        "/Users/hannahdamico/EHR_PROJECT_821/labs_core_test_data.txt"
     )
     check_patient_id1 = "HAIUFABG-4543"
     check_patient_id2 = "BOAET-64EG"
