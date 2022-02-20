@@ -29,10 +29,6 @@ def parse_data(filename: str) -> dict[str, list]:
     return dataframe
 
 
-patient_core = parse_data2("/Users/hannahdamico/EHR_PROJECT_821/test_data2.txt")
-labs_core = parse_data2("/Users/hannahdamico/EHR_PROJECT_821/test_table.txt")
-
-
 def num_older_than(age: float, patient_core: dict[str, list]) -> int:
     """Compute total number of patients older than input number."""
     days_old = age * DAYS_IN_YEAR
