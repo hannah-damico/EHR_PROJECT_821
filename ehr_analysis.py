@@ -70,21 +70,24 @@ def sick_patients(
 def first_admission_age(
     patientID: str, patient_core: dict[str, list[str]], labs_core: dict[str, list[str]]
 ):
+    """Compute age at first admission for specific a patient."""
+    test_date_list: list[date] = []
     """Return patient age at first admission."""
-    for i, values in enumerate(patient_core["PatientDateOfBirth"]):
-        if patientID == patient_core["PatientID"][i]:
-            year, month, day = values.split()[0].split("-")
-            dob = date(int(year), int(month), int(day))
-        for j in labs_core["LabDateTime"]:
-            test_date_list: list[date] = []
-            year_visit, month_visit, day_visit = (
-                labs_core["LabDateTime"][i].split()[0].split("-")
-            )
-            admission_dates = date(int(year_visit), int(month_visit), int(day_visit))
-            test_date_list.append(admission_dates)
-            first_admission = min(test_date_list)
-    diff = abs((first_admission - dob)) / DAYS_IN_YEAR
+    for i, patID in enumerate(patient_core["PatientID"]):
+        if patientID != patID:
+            continue
+        year, month, day = patient_core["PatientDateOfBirth"][i].split()[0].split("-")
+        dob = date(int(year), int(month), int(day))
+        for j, lab_time in enumerate(labs_core["LabDateTime"]):
+            if patientID == labs_core["PatientID"][j]:
+                year_visit, month_visit, day_visit = (
+                    labs_core["LabDateTime"][j].split()[0].split("-")
+                )
+                admission_dates = date(
+                    int(year_visit), int(month_visit), int(day_visit)
+                )
+                test_date_list.append(admission_dates)
+    first_admission = min(test_date_list)
+    diff = (first_admission - dob) / DAYS_IN_YEAR
     first_admission_age = diff.days
-    return (
-        f"Patient {patientID} was {first_admission_age} years old at first admission."
-    )
+    return first_admission_age
