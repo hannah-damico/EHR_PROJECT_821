@@ -1,6 +1,14 @@
 """Testing EHR Analysis."""
 import pytest
-from ehr_analysis import parse_data, num_older_than, sick_patients, first_admission_age
+from datetime import datetime
+from ehr_analysis import (
+    parse_data,
+    num_older_than,
+    sick_patients,
+    first_admission_age,
+    Patient,
+    Lab,
+)
 
 
 def testing_parse_data():
@@ -64,3 +72,12 @@ def testing_first_admission_age():
         )
         == 4
     )
+
+
+lab1 = Lab(
+    patID="HAIUFABG-4543",
+    label="METABOLIC: GLUCOSE",
+    value=2.52,
+    units="mg/dl",
+    LabDateTime=datetime.strptime("1992-06-30 09:35:57.150", "%Y-%m-%d %H:%M:%S.%f"),
+)

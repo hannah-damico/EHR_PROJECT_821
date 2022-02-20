@@ -1,12 +1,67 @@
 """Computational Complexity and Data Structures Project."""
 
-from datetime import date, datetime, timedelta
 import logging
+
+from datetime import date, datetime, timedelta
+
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
 
 DAYS_IN_YEAR = 365.25
+
+
+class Lab:
+    """Create a class with lab information."""
+
+    def __init__(
+        self,
+        patID: str,
+        ad_id: str,
+        label: str,
+        value: float,
+        LabDateTime: datetime,
+    ):
+        """Initialize lab information."""
+        self._patID = patID
+        self.ad_id = ad_id
+        self._label = label
+        self._value = value
+        self._LabDateTime = LabDateTime
+
+
+class Patient:
+    """Create a class with patient information."""
+
+    def __init__(self, gender: str, dob: datetime, race: str) -> None:
+        """Initialize patient demographic information."""
+        self._gender = gender
+        self._dob = dob
+        self._race = race
+        self._labs: list[Lab] = []
+
+    @property
+    def age(self) -> float:
+        """Calculate patient age."""
+        current_time = datetime.now()
+        dob = self._dob
+        time_diff = current_time - dob
+        age = time_diff.days / DAYS_IN_YEAR
+        return age
+
+    @property
+    def first_admission_age(self):
+        """Compute patient age at first admission."""
+        min_lab_date = self._labs[0]._LabDateTime
+        for lab in self._labs:
+            if lab.ad_id == "1" and lab._LabDateTime < min_lab_date:
+                min_lab_date = lab._LabDateTime
+        diff = min_lab_date - self._dob
+        return diff.days / DAYS_IN_YEAR
+
+    def retrieve_labs(self, lab: Lab) -> None:
+        """Retrieve labs from Lab."""
+        self._labs.append(lab)
 
 
 def parse_data(filename: str) -> dict[str, list[str]]:
@@ -29,33 +84,30 @@ def parse_data(filename: str) -> dict[str, list[str]]:
     return dataframe
 
 
-def num_older_than(age: float, patient_core: dict[str, list[str]]) -> int:
+def num_older_than(age: float, patient_core: list[Patient]) -> int:
     """Compute total number of patients older than input number."""
-    days_old = age * DAYS_IN_YEAR
     count_older = 0
-    for values in patient_core["PatientDateOfBirth"]:  # O(N)
-        year, month, day = values.split()[0].split("-")
-        patient_age = date.today() - date(int(year), int(month), int(day))
-        if patient_age.days > days_old:  # O(1)
+    for i in range(len(patient_core)):  # O(N)
+        if patient_core[i].age > age:
             count_older += 1
     return count_older
 
 
 def sick_patients(
-    lab: str, gt_lt: str, value_compare: float, labs_core: dict[str, list[str]]
+    lab: str, gt_lt: str, value_compare: float, labs_core: list[Lab]
 ) -> set[str]:
     """Each if conditional statement has constant complexity and are not counted in overall. Function has O(N)."""
     sick_patient_list: set[str] = set()
-    check_lab_value = [float(i) for i in labs_core["LabValue"]]  # O(N)
-    for i, lab_name in enumerate(labs_core["LabName"]):  # O(N)
-        if lab == lab_name:  # O(1)
+    # check_lab_value = [float(i) for i in labs_core.value()]  # O(N)
+    for i in range(len(labs_core)):  # O(N)
+        if lab == labs_core[i]._label:  # O(1)
             if gt_lt == ">":
-                if check_lab_value[i] > value_compare:  # O(2)
-                    patient_id = labs_core["PatientID"][i]  # O(2)
+                if labs_core[i]._value > value_compare:  # O(2)
+                    patient_id = labs_core[i]._patID  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             elif gt_lt == "<":  # O(1)
-                if check_lab_value[i] < value_compare:  # O(2)
-                    patient_id = labs_core["PatientID"][i]  # O(2)
+                if labs_core[i]._value < value_compare:  # O(2)
+                    patient_id = labs_core[i]._patID  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             else:
                 raise ValueError(f"Unexpected inequality symbol: {gt_lt}")
@@ -72,7 +124,6 @@ def first_admission_age(
 ):
     """Compute age at first admission for specific a patient."""
     test_date_list: list[date] = []
-    """Return patient age at first admission."""
     for i, patID in enumerate(patient_core["PatientID"]):
         if patientID != patID:
             continue
@@ -91,3 +142,22 @@ def first_admission_age(
     diff = (first_admission - dob) / DAYS_IN_YEAR
     first_admission_age = diff.days
     return first_admission_age
+
+
+# def first_admission_age(
+#     patientID: str, patient_core: list[Patient], labs_core: list[Lab]
+# ) -> float:
+#     """Compute age at first admission for specific a patient."""
+#     test_date_list: list[datetime] = []
+#     for i in range(len(labs_core)):
+#         if patientID != labs_core[i]._patID:
+#             continue
+#         dob = patient_core[i]._dob
+#         for j in range(len(labs_core)):
+#             if patientID == labs_core[j]._patID:
+#                 admission_dates = labs_core[j]._LabDateTime
+#                 test_date_list.append(admission_dates)
+#     first_admission = min(test_date_list)
+#     diff = first_admission - dob
+#     first_admission_age = diff.days / DAYS_IN_YEAR
+#     return first_admission_age
