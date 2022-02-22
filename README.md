@@ -1,11 +1,11 @@
 # EHR_PROJECT_821
- ## End User Information
-   ### Installation Instructions
+## End User Information
+### Installation Instructions
    Begin by running the folllowing command line in your terminal:
          `install pytest`
    * Note that `pytest` should be installed in the working dirctory where testing will be run. The *testing_ehr_analysis* function will import `pytest`, so this step is important.
    
-   ### Setup and Input File Instructions
+### Setup and Input File Instructions
    Download the three following necessary testing text files to working directory:
    1. *simple_test_data.txt*
       * Contains 4 columns, and 3 rows of generic, tab delimited testing data
@@ -15,7 +15,7 @@
       * Contains 6 columns and 6 rows of tab delimited, fabricated EHR patient data
    
    
-   ### API description
+### API description
    * **Authorization**: This documentation does not require authorization and may be implemented directly by following the above and below instructions.
    * **Resources**: All necessary resources for this documentation are include in this repository. No outside permissions or downloads are required.
    * **Error Messages**: Possible `ValueError` messages may be obtained from the function *sick_patients()* if users input labels other than those defined for use inthe function: "<" or ">". See example below:
@@ -29,7 +29,7 @@
 
 
 ## Contributor Information
-   ### Testing Instructions
+### Testing Instructions
    Users should begin by opening python file *testing_ehr_analysis.py* and replacing pathways in each function corresponding to the correct text files per testing function as described below:
    1. *testing_parse_data( )*:
       * Variable *simple_test_data* should be replaced with user pathway corresponding to the textfile *simple_test_data.txt*
