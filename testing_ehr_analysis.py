@@ -25,6 +25,13 @@ def testing_parse_data():
     assert parse_data(simple_test_data) == check_simple_test_data
 
 
+def testing_class_Patient_method():
+    """Check first_admission_age method in class Patient."""
+    patient_core = parse_data("patient_core_test_data.txt")
+
+    # assert
+
+
 def testing_num_older_than():
     """Check num_older_than function coverage."""
     patient_core_test_data = parse_data("patient_core_test_data.txt")
