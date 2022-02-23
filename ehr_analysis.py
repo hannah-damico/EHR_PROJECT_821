@@ -84,6 +84,14 @@ def parse_data(filename: str) -> dict[str, list[str]]:
     return dataframe
 
 
+def convert_to_classes(
+    patient_core: dict[str, list[str]], labs_core: dict[str, list[str]]
+) -> dict[str, Patient]:
+    """Convert class dictionary to class Patient and Labs."""
+    # Grab all necessary patient info
+    # key will be patient ID
+
+
 def num_older_than(age: float, patient_core: list[Patient]) -> int:
     """Compute total number of patients older than input number."""
     count_older = 0
