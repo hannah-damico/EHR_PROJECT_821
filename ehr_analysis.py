@@ -84,6 +84,31 @@ def parse_data(filename: str) -> dict[str, list[str]]:
     return dataframe
 
 
+def parse_data_Patient(filename: str) -> dict[str, Patient]:
+    """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
+    with open(filename, mode="r", encoding="utf-8-sig") as text_file:
+        line_by_line = text_file.readlines()
+
+    col_names = line_by_line[0]
+    col_names_list = col_names.strip().split("\t")
+
+    rows_data = [row_string.split("\t") for row_string in line_by_line[1:]]
+
+    for rows in rows_data:
+        data_dict = dict(zip(col_names_list, rows))
+
+        print(data_dict)
+
+
+print(
+    parse_data_Patient("/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt")
+)
+
+# Patient(
+#     data_dict("a")
+# )
+
+
 def convert_to_classes(
     patient_core: dict[str, list[str]], labs_core: dict[str, list[str]]
 ) -> dict[str, Patient]:
