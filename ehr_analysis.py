@@ -33,8 +33,9 @@ class Lab:
 class Patient:
     """Create a class with patient information."""
 
-    def __init__(self, gender: str, dob: datetime, race: str) -> None:
+    def __init__(self, patID: str, gender: str, dob: datetime, race: str) -> None:
         """Initialize patient demographic information."""
+        self._patID = patID
         self._gender = gender
         self._dob = dob
         self._race = race
@@ -94,53 +95,72 @@ def parse_data_Patient(filename: str) -> dict[str, Patient]:
 
     rows_data = [row_string.split("\t") for row_string in line_by_line[1:]]
 
+    patient_dict = {}
     for rows in rows_data:
         data_dict = dict(zip(col_names_list, rows))
-
-        print(data_dict)
+        patient = Patient(
+            patID=data_dict["PatientID"],
+            gender=data_dict["PatientGender"],
+            dob=datetime.strptime(data_dict["PatientDateOfBirth"], "%Y-%m-%d"),
+            race=data_dict["PatientRace"],
+        )
+        patient_dict[patient._patID] = patient
+    return patient_dict
 
 
 print(
     parse_data_Patient("/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt")
 )
 
-# Patient(
-#     data_dict("a")
-# )
+
+def parse_data_Labs(filename: str) -> dict[int, Lab]:
+    """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
+    with open(filename, mode="r", encoding="utf-8-sig") as text_file:
+        line_by_line = text_file.readlines()
+
+    col_names = line_by_line[0]
+    col_names_list = col_names.strip().split("\t")
+
+    rows_data = [row_string.split("\t") for row_string in line_by_line[1:]]
+
+    Labs_dict = {}
+    for i, rows in enumerate(rows_data):
+        data_dict = dict(zip(col_names_list, rows))
+        lab = Lab(
+            patID=data_dict["PatientID"],
+            ad_id=data_dict["AdmissionID"],
+            label=data_dict["LabName"],
+            value=float(data_dict["LabValue"]),
+            LabDateTime=datetime.strptime(data_dict["LabDateTime"], "%Y-%m-%d"),
+        )
+        Labs_dict[i] = lab
+    return Labs_dict
 
 
-def convert_to_classes(
-    patient_core: dict[str, list[str]], labs_core: dict[str, list[str]]
-) -> dict[str, Patient]:
-    """Convert class dictionary to class Patient and Labs."""
-    # Grab all necessary patient info
-    # key will be patient ID
-
-
-def num_older_than(age: float, patient_core: list[Patient]) -> int:
+def num_older_than(age: float, patient_core: dict[str, Patient]) -> int:
     """Compute total number of patients older than input number."""
     count_older = 0
-    for i in range(len(patient_core)):  # O(N)
-        if patient_core[i].age > age:
+    for patient in patient_core.values():  # O(N)
+        if patient.age > age:
             count_older += 1
     return count_older
 
 
 def sick_patients(
-    lab: str, gt_lt: str, value_compare: float, labs_core: list[Lab]
+    lab_name: str, gt_lt: str, value_compare: float, labs_core: dict[int, Lab]
 ) -> set[str]:
     """Each if conditional statement has constant complexity and are not counted in overall. Function has O(N)."""
     sick_patient_list: set[str] = set()
     # check_lab_value = [float(i) for i in labs_core.value()]  # O(N)
-    for i in range(len(labs_core)):  # O(N)
-        if lab == labs_core[i]._label:  # O(1)
+    for lab in labs_core.values():  # O(N)
+        if lab_name == lab._label:  # O(1)
             if gt_lt == ">":
-                if labs_core[i]._value > value_compare:  # O(2)
-                    patient_id = labs_core[i]._patID  # O(2)
+                if lab._value > value_compare:  # O(2)
+                    patient_id = lab._patID  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             elif gt_lt == "<":  # O(1)
-                if labs_core[i]._value < value_compare:  # O(2)
-                    patient_id = labs_core[i]._patID  # O(2)
+                if lab._value < value_compare:  # O(2)
+                    patient_id = lab._patID  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             else:
                 raise ValueError(f"Unexpected inequality symbol: {gt_lt}")
@@ -153,44 +173,14 @@ def sick_patients(
 
 
 def first_admission_age(
-    patientID: str, patient_core: dict[str, list[str]], labs_core: dict[str, list[str]]
+    patientID: str, patient_core: dict[str, Patient], labs_core: dict[int, Lab]
 ):
     """Compute age at first admission for specific a patient."""
     test_date_list: list[date] = []
-    for i, patID in enumerate(patient_core["PatientID"]):
-        if patientID != patID:
-            continue
-        year, month, day = patient_core["PatientDateOfBirth"][i].split()[0].split("-")
-        dob = date(int(year), int(month), int(day))
-        for j, lab_time in enumerate(labs_core["LabDateTime"]):
-            if patientID == labs_core["PatientID"][j]:
-                year_visit, month_visit, day_visit = (
-                    labs_core["LabDateTime"][j].split()[0].split("-")
-                )
-                admission_dates = date(
-                    int(year_visit), int(month_visit), int(day_visit)
-                )
-                test_date_list.append(admission_dates)
+    for lab in labs_core.values():
+        if patientID == lab._patID:
+            test_date_list.append(lab._LabDateTime)
     first_admission = min(test_date_list)
-    diff = (first_admission - dob) / DAYS_IN_YEAR
-    first_admission_age = diff.days
+    diff = (first_admission - patient_core[patientID]._dob) / DAYS_IN_YEAR
+    # first_admission_age = diff.days
     return first_admission_age
-
-
-# def first_admission_age(
-#     patientID: str, patient_core: list[Patient], labs_core: list[Lab]
-# ) -> float:
-#     """Compute age at first admission for specific a patient."""
-#     test_date_list: list[datetime] = []
-#     for i in range(len(labs_core)):
-#         if patientID != labs_core[i]._patID:
-#             continue
-#         dob = patient_core[i]._dob
-#         for j in range(len(labs_core)):
-#             if patientID == labs_core[j]._patID:
-#                 admission_dates = labs_core[j]._LabDateTime
-#                 test_date_list.append(admission_dates)
-#     first_admission = min(test_date_list)
-#     diff = first_admission - dob
-#     first_admission_age = diff.days / DAYS_IN_YEAR
-#     return first_admission_age
