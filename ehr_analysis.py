@@ -108,9 +108,11 @@ def parse_data_Patient(filename: str) -> dict[str, Patient]:
     return patient_dict
 
 
-print(
-    parse_data_Patient("/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt")
-)
+# print(
+#     parse_data_Patient(
+#         "/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt"
+#     ).keys()
+# )
 
 
 def parse_data_Labs(filename: str) -> dict[int, Lab]:
@@ -174,7 +176,7 @@ def sick_patients(
 
 def first_admission_age(
     patientID: str, patient_core: dict[str, Patient], labs_core: dict[int, Lab]
-):
+) -> int:
     """Compute age at first admission for specific a patient."""
     test_date_list: list[date] = []
     for lab in labs_core.values():
