@@ -108,13 +108,6 @@ def parse_data_Patient(filename: str) -> dict[str, Patient]:
     return patient_dict
 
 
-# print(
-#     parse_data_Patient(
-#         "/Users/hannahdamico/EHR_PROJECT_821/patient_core_test_data.txt"
-#     ).keys()
-# )
-
-
 def parse_data_Labs(filename: str) -> dict[int, Lab]:
     """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
     with open(filename, mode="r", encoding="utf-8-sig") as text_file:
@@ -133,10 +126,22 @@ def parse_data_Labs(filename: str) -> dict[int, Lab]:
             ad_id=data_dict["AdmissionID"],
             label=data_dict["LabName"],
             value=float(data_dict["LabValue"]),
-            LabDateTime=datetime.strptime(data_dict["LabDateTime"], "%Y-%m-%d"),
+            LabDateTime=datetime.strptime(
+                data_dict["LabDateTime"], "%Y-%m-%d %H:%M:%S.%f"
+            ),
         )
         Labs_dict[i] = lab
     return Labs_dict
+
+
+print(
+    parse_data_Labs("/Users/hannahdamico/EHR_PROJECT_821/labs_core_test_data.txt")[
+        1
+    ]._patID
+)
+
+# test_date = "1992-06-30 09:35:57.150"
+# print(datetime.strptime(test_date, "%Y-%m-%d %H:%M:%S.%f"))
 
 
 def num_older_than(age: float, patient_core: dict[str, Patient]) -> int:
@@ -176,7 +181,7 @@ def sick_patients(
 
 def first_admission_age(
     patientID: str, patient_core: dict[str, Patient], labs_core: dict[int, Lab]
-) -> int:
+) -> float:
     """Compute age at first admission for specific a patient."""
     test_date_list: list[date] = []
     for lab in labs_core.values():
@@ -185,4 +190,4 @@ def first_admission_age(
     first_admission = min(test_date_list)
     diff = (first_admission - patient_core[patientID]._dob) / DAYS_IN_YEAR
     # first_admission_age = diff.days
-    return first_admission_age
+    return diff

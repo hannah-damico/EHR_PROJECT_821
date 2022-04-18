@@ -24,7 +24,7 @@ def testing_data_parsing():
     simple_test_data = "simple_test_data.txt"
     patient_core = parse_data_Patient("patient_core_test_data.txt")
     lab_core = parse_data_Labs("labs_core_test_data.txt")
-    patient_keys = {["HAIUFABG-4543", "BOAET-64EG"]}
+    patient_keys = ["HAIUFABG-4543", "BOAET-64EG"]
 
     check_simple_test_data = {
         "key1": ["item11", "item21"],
@@ -34,7 +34,7 @@ def testing_data_parsing():
     }
 
     assert parse_data(simple_test_data) == check_simple_test_data
-    # assert patient_core.keys() == patient_keys
+    assert patient_core.keys() == patient_keys
     assert isinstance(patient_core["HAIUFABG-4543"], Patient)
     assert isinstance(lab_core["HAIUFABG-4543"], Lab)
 
