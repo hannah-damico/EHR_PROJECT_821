@@ -34,9 +34,9 @@ def testing_data_parsing():
     }
 
     assert parse_data(simple_test_data) == check_simple_test_data
-    assert patient_core.keys() == patient_keys
+    assert list(patient_core.keys()) == patient_keys
     assert isinstance(patient_core["HAIUFABG-4543"], Patient)
-    assert isinstance(lab_core["HAIUFABG-4543"], Lab)
+    assert isinstance(lab_core[1], Lab)
 
 
 def testing_num_older_than():
