@@ -2,7 +2,6 @@
 import pytest
 from datetime import datetime
 from ehr_analysis import (
-    parse_data,
     num_older_than,
     parse_data_Patient,
     parse_data_Labs,
@@ -26,14 +25,6 @@ def testing_data_parsing():
     lab_core = parse_data_Labs("labs_core_test_data.txt")
     patient_keys = ["HAIUFABG-4543", "BOAET-64EG"]
 
-    check_simple_test_data = {
-        "key1": ["item11", "item21"],
-        "key2": ["item12", "item22"],
-        "key3": ["item13", "item23"],
-        "key4": ["item14", "item24"],
-    }
-
-    assert parse_data(simple_test_data) == check_simple_test_data
     assert list(patient_core.keys()) == patient_keys
     assert isinstance(patient_core["HAIUFABG-4543"], Patient)
     assert isinstance(lab_core[1], Lab)
