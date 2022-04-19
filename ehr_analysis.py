@@ -17,60 +17,39 @@ class Lab:
 
     def __init__(
         self,
-        patID: str,
+        pat_id: str,
         ad_id: str,
         label: str,
         value: float,
-        LabDateTime: datetime,
+        lab_date_time: datetime,
     ):
         """Initialize lab information."""
-        self._patID = patID
+        self.pat_id = pat_id
         self.ad_id = ad_id
-        self._label = label
-        self._value = value
-        self._LabDateTime = LabDateTime
+        self.label = label
+        self.value = value
+        self.lab_date_time = lab_date_time
 
 
 class Patient:
     """Create a class with patient information."""
 
-    def __init__(self, patID: str, gender: str, dob: datetime, race: str) -> None:
+    def __init__(self, pat_id: str, gender: str, dob: datetime, race: str) -> None:
         """Initialize patient demographic information."""
-        self._patID = patID
-        self._gender = gender
-        self._dob = dob
-        self._race = race
-        self._labs: list[Lab] = []
+        self.pat_id = pat_id
+        self.gender = gender
+        self.dob = dob
+        self.race = race
+        self.labs: list[Lab] = []
 
     @property
     def age(self) -> float:
         """Calculate patient age."""
         current_time = datetime.now()
-        dob = self._dob
+        dob = self.dob
         time_diff = current_time - dob
         age = time_diff.days / DAYS_IN_YEAR
         return age
-
-
-
-def parse_data(filename: str) -> dict[str, list[str]]:
-    """After dropping constant order operations, we have O(N^2 + N) complexity since we nested for loops."""
-    with open(filename, mode="r", encoding="utf-8-sig") as text_file:
-        line_by_line = text_file.readlines()
-
-    col_names = line_by_line[0]
-    col_names_list = col_names.strip().split("\t")
-    dataframe: dict[str, list] = {}
-    for var in col_names_list:  # O(N)
-        dataframe[var] = []
-
-    for i in range(1, len(line_by_line)):  # O(N)
-        line_data_list = line_by_line[i].strip().split("\t")
-        for j in range(len(col_names_list)):  # O(N)
-            dataframe[col_names_list[j]].append(line_data_list[j])
-
-    text_file.close()
-    return dataframe
 
 
 def parse_data_Patient(filename: str) -> dict[str, Patient]:
@@ -87,12 +66,12 @@ def parse_data_Patient(filename: str) -> dict[str, Patient]:
     for rows in rows_data:
         data_dict = dict(zip(col_names_list, rows))
         patient = Patient(
-            patID=data_dict["PatientID"],
+            pat_id=data_dict["PatientID"],
             gender=data_dict["PatientGender"],
             dob=datetime.strptime(data_dict["PatientDateOfBirth"], "%Y-%m-%d"),
             race=data_dict["PatientRace"],
         )
-        patient_dict[patient._patID] = patient
+        patient_dict[patient.pat_id] = patient
     return patient_dict
 
 
@@ -110,15 +89,14 @@ def parse_data_Labs(filename: str) -> dict[int, Lab]:
     for i, rows in enumerate(rows_data):
         data_dict = dict(zip(col_names_list, rows))
         lab = Lab(
-            patID=data_dict["PatientID"],
+            pat_id=data_dict["PatientID"],
             ad_id=data_dict["AdmissionID"],
             label=data_dict["LabName"],
             value=float(data_dict["LabValue"]),
-            LabDateTime=datetime.strptime(data_dict["LabDateTime"][0:10], "%Y-%m-%d"),
+            lab_date_time=datetime.strptime(data_dict["LabDateTime"][0:10], "%Y-%m-%d"),
         )
         Labs_dict[i] = lab
     return Labs_dict
-
 
 
 def num_older_than(age: float, patient_core: dict[str, Patient]) -> int:
@@ -137,14 +115,14 @@ def sick_patients(
     sick_patient_list: set[str] = set()
     # check_lab_value = [float(i) for i in labs_core.value()]  # O(N)
     for lab in labs_core.values():  # O(N)
-        if lab_name == lab._label:  # O(1)
+        if lab_name == lab.label:  # O(1)
             if gt_lt == ">":
-                if lab._value > value_compare:  # O(2)
-                    patient_id = lab._patID  # O(2)
+                if lab.value > value_compare:  # O(2)
+                    patient_id = lab.pat_id  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             elif gt_lt == "<":  # O(1)
-                if lab._value < value_compare:  # O(2)
-                    patient_id = lab._patID  # O(2)
+                if lab.value < value_compare:  # O(2)
+                    patient_id = lab.pat_id  # O(2)
                     sick_patient_list.add(patient_id)  # O(1)
             else:
                 raise ValueError(f"Unexpected inequality symbol: {gt_lt}")
@@ -162,10 +140,9 @@ def first_admission_age(
     """Compute age at first admission for specific a patient."""
     test_date_list: list[date] = []
     for lab in labs_core.values():
-        if patientID == lab._patID:
-            test_date_list.append(lab._LabDateTime)
+        if patientID == lab.pat_id:
+            test_date_list.append(lab.lab_date_time)
     first_admission = min(test_date_list)
-    diff = (first_admission - patient_core[patientID]._dob) / DAYS_IN_YEAR
+    diff = (first_admission - patient_core[patientID].dob) / DAYS_IN_YEAR
     first_admission_age = diff.days
     return first_admission_age
-
