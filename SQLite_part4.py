@@ -3,6 +3,7 @@ Part 4 of EHR Cumulative project.
 Implementing SQLite.
 """
 
+from datetime import datetime
 import sqlite3
 import os
 
@@ -14,33 +15,22 @@ con = sqlite3.connect("/Users/hannahdamico/EHR_PROJECT_821/ehr_data.db")
 
 cur = con.cursor()
 
-cur.execute(
-    """CREATE TABLE patient(pat_id VARCHAR PRIMARY KEY,
-    gender VARCHAR,
-    dob VARCHAR,
-    race VARCHAR,
-    marital_status VARCHAR,
-    language VARCHAR,
-    pop_below_poverty FLOAT)
-    """
-)
-
-cur.execute(
-    """CREATE TABLE labs ([pat_id] VARCHAR NOT NULL,
-    [admission_id] VARCHAR NOT NULL,
-    [lab_name] VARCHAR,
-    [lab_value] FLOAT,
-    [lab_units] VARCHAR,
-    [lab_date_time] VARCHAR,
-    CONSTRAINT lab_id PRIMARY KEY (pat_id, admission_id))
-    """
-)
-
 
 def parse_data_patient(file: str):
     """Parse Data for Patients."""
     filename = open(file)
     next(filename)
+    cur.execute(
+        """CREATE TABLE patient(pat_id VARCHAR PRIMARY KEY,
+        gender VARCHAR,
+        dob VARCHAR,
+        race VARCHAR,
+        marital_status VARCHAR,
+        language VARCHAR,
+        pop_below_poverty FLOAT)
+        """
+    )
+
     for row in filename:
         observations = row.strip().split("\t")
         data = observations[0:7]
@@ -51,6 +41,16 @@ def parse_data_labs(file: str):
     """Parse Data for Labs."""
     filename = open(file)
     next(filename)
+    cur.execute(
+        """CREATE TABLE labs ([pat_id] VARCHAR NOT NULL,
+        [admission_id] VARCHAR NOT NULL,
+        [lab_name] VARCHAR,
+        [lab_value] FLOAT,
+        [lab_units] VARCHAR,
+        [lab_date_time] VARCHAR,
+        CONSTRAINT lab_id PRIMARY KEY (pat_id, admission_id))
+        """
+    )
     for row in filename:
         observations = row.strip().split("\t")
         data = observations[0:6]
@@ -67,7 +67,7 @@ def num_older_than(age: int) -> int:
     return count_older.fetchall()[0][0]
 
 
-def sick_patients(lab_name: str, value: float, gt_lt: str):
+def sick_patients(lab_name: str, value: float, gt_lt: str) -> str:
     """Return a list of patients with specific lab & lab value."""
     lab_name_match = [lab_name, value]
     sick_patient_list = cur.execute(
@@ -78,7 +78,7 @@ def sick_patients(lab_name: str, value: float, gt_lt: str):
     return sick_patient_list.fetchall()
 
 
-def first_admission_age(pat_id: str):
+def first_admission_age(pat_id: str) -> float:
     """Calculate age of patient at first admission."""
     patient_id = [pat_id]
     age = cur.execute(
@@ -90,7 +90,3 @@ def first_admission_age(pat_id: str):
         patient_id,
     )
     return age.fetchall()[0][0]
-
-
-parse_data_patient("patient_core_test_data.txt")
-parse_data_labs("labs_core_test_data.txt")
