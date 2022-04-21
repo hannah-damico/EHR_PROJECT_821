@@ -1,5 +1,6 @@
 """Testing EHR Analysis."""
 import pytest
+import os
 from datetime import datetime
 
 from SQLite_part4 import (
@@ -8,8 +9,11 @@ from SQLite_part4 import (
     parse_data_labs,
     sick_patients,
     first_admission_age,
+)
+from ehr_analysis import Lab, Patient
 
-
+if os.path.exists("ehr_data.db"):
+    os.remove("ehr_data.db")
 
 def testing_data_parsing():
     """
@@ -19,12 +23,11 @@ def testing_data_parsing():
 
     """
 
-    simple_test_data = "simple_test_data.txt"
     patient_core = parse_data_patient("patient_core_test_data.txt")
     lab_core = parse_data_labs("labs_core_test_data.txt")
     patient_keys = ["HAIUFABG-4543", "BOAET-64EG"]
 
-    assert list(patient_core.keys()) == patient_keys
+    assert list(patient_core["pat_id"]) == patient_keys
     assert isinstance(patient_core["HAIUFABG-4543"], Patient)
     assert isinstance(lab_core[1], Lab)
 
@@ -33,7 +36,6 @@ def testing_num_older_than():
     """Check num_older_than function coverage."""
 
     patient_core_test_data = parse_data_patient("patient_core_test_data.txt")
-
 
     assert num_older_than(-99, patient_core_test_data) == 2
     assert num_older_than(999, patient_core_test_data) == 0
