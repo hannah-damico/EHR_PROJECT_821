@@ -15,6 +15,7 @@ from ehr_analysis import Lab, Patient
 if os.path.exists("ehr_data.db"):
     os.remove("ehr_data.db")
 
+
 def testing_data_parsing():
     """
     Check parse_data function coverage.
