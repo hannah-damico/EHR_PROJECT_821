@@ -1,15 +1,19 @@
 """Testing EHR Analysis."""
 import pytest
+import os
 from datetime import datetime
-from ehr_analysis import (
+
+from SQLite_part4 import (
     num_older_than,
-    parse_data_Patient,
-    parse_data_Labs,
+    parse_data_patient,
+    parse_data_labs,
     sick_patients,
     first_admission_age,
-    Patient,
-    Lab,
 )
+from ehr_analysis import Lab, Patient
+
+if os.path.exists("ehr_data.db"):
+    os.remove("ehr_data.db")
 
 
 def testing_data_parsing():
@@ -20,19 +24,19 @@ def testing_data_parsing():
 
     """
 
-    simple_test_data = "simple_test_data.txt"
-    patient_core = parse_data_Patient("patient_core_test_data.txt")
-    lab_core = parse_data_Labs("labs_core_test_data.txt")
+    patient_core = parse_data_patient("patient_core_test_data.txt")
+    lab_core = parse_data_labs("labs_core_test_data.txt")
     patient_keys = ["HAIUFABG-4543", "BOAET-64EG"]
 
-    assert list(patient_core.keys()) == patient_keys
+    assert list(patient_core["pat_id"]) == patient_keys
     assert isinstance(patient_core["HAIUFABG-4543"], Patient)
     assert isinstance(lab_core[1], Lab)
 
 
 def testing_num_older_than():
     """Check num_older_than function coverage."""
-    patient_core_test_data = parse_data_Patient("patient_core_test_data.txt")
+
+    patient_core_test_data = parse_data_patient("patient_core_test_data.txt")
 
     assert num_older_than(-99, patient_core_test_data) == 2
     assert num_older_than(999, patient_core_test_data) == 0
@@ -41,7 +45,8 @@ def testing_num_older_than():
 
 def testing_sick_patients():
     """Check sick_patients function coverage."""
-    labs_core_test_data = parse_data_Labs("labs_core_test_data.txt")
+    labs_core_test_data = parse_data_labs("labs_core_test_data.txt")
+
     check_label = set(["HAIUFABG-4543"])
     check_operation = set(["BOAET-64EG"])
 
@@ -60,8 +65,10 @@ def testing_sick_patients():
 
 def testing_first_admission_age():
     """Check first_admission_age function coverage."""
-    patient_core_test_data = parse_data_Patient("patient_core_test_data.txt")
-    labs_core_test_data = parse_data_Labs("labs_core_test_data.txt")
+
+    patient_core_test_data = parse_data_patient("patient_core_test_data.txt")
+    labs_core_test_data = parse_data_labs("labs_core_test_data.txt")
+
     check_patient_id1 = "HAIUFABG-4543"
     check_patient_id2 = "BOAET-64EG"
 
